@@ -9,6 +9,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven("https://libs.dev.cred.club/")
     }
 }
 dependencyResolutionManagement {
@@ -16,9 +17,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://libs.dev.cred.club/")
     }
 }
 
 rootProject.name = "mobileAsm1.1"
 include(":app")
- 

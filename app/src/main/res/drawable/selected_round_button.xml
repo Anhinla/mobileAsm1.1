@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Shadow Layer -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#50000000" />
+        </shape>
+    </item>
+
+    <!-- White Outline -->
+    <item android:left="0dp" android:right="0dp" android:top="0dp" android:bottom="3dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+
+    <!-- Main Background (Default Light Blue) -->
+    <item android:left="1dp" android:right="1dp" android:top="1dp" android:bottom="3dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/blue"/> <!-- Default Color -->
+        </shape>
+    </item>
+
+</layer-list>
