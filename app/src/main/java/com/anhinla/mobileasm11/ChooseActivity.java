@@ -24,5 +24,9 @@ public class ChooseActivity extends AppCompatActivity {
             Intent intent = new Intent(ChooseActivity.this, ScanActivity.class);
             startActivity(intent);
         });
+        binding.searchSurfaceBlock.setOnClickListener(view -> {
+            Intent intent = new Intent(ChooseActivity.this, SurfaceActivity.class);
+            startActivity(intent);
+        });
     }
 }

@@ -97,7 +97,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/shape_corner_top_bg"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/image" />
+                    android:src="@drawable/surface" />
 
             </FrameLayout>
 
@@ -162,24 +162,6 @@
             app:layout_constraintStart_toStartOf="parent"
             android:elevation="8dp">
 
-            <ImageView
-                android:id="@+id/imageView7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/back_btn" />
-
-            <ImageView
-                android:id="@+id/imageView9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView7"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/back_btn" />
 
             <TextView
                 android:id="@+id/textView10"

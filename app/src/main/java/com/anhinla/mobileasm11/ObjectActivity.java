@@ -8,6 +8,17 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.widget.ImageButton;
+import android.widget.SeekBar;
+import androidx.annotation.NonNull;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +28,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ObjectActivity extends AppCompatActivity {
 
@@ -25,12 +37,24 @@ public class ObjectActivity extends AppCompatActivity {
     private LinearLayout linearContainer;
     private ArrayList<String> itemList;
     private Button selectedButton = null;
+    private boolean isinfo = false;
+    private boolean ispos = false;
+    private ImageButton radar ;
+    private RecyclerView wheelRecyclerView;
+    private boolean isWheelVisible = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_object);
+        ConstraintLayout mainLayout = findViewById(R.id.main); // Ensure this ID matches your XML layout
+        // Receive captured image URI from ScanActivity
+        String imageUriString = getIntent().getStringExtra("captured_image_uri");
+        if (imageUriString != null) {
+            Uri imageUri = Uri.parse(imageUriString);
+            mainLayout.setBackground(Drawable.createFromPath(imageUri.getPath()));
+        }
 
         linearContainer = findViewById(R.id.linearContainer);
 
@@ -52,6 +76,18 @@ public class ObjectActivity extends AppCompatActivity {
 
         horizontalScrollView = findViewById(R.id.horizontalScrollView);
 
+        btnInfo.setOnClickListener(v -> {
+            setupToggleButton(btnInfo);
+            isinfo = !isinfo;
+            btnInfo.setChecked(isinfo);
+            if(isinfo){
+                btnInfo.setBackgroundResource(R.drawable.toggled_corner_radius_button);
+            }
+            else{
+                btnInfo.setBackgroundResource(R.drawable.corner_radius_button);
+            }
+        });
+
         setupToggleButton(btnInfo);
         setupToggleButton(btnPractice);
         setupToggleButton(btnMore);
@@ -62,8 +98,88 @@ public class ObjectActivity extends AppCompatActivity {
             Intent intent = new Intent(ObjectActivity.this, ScanActivity.class);
             startActivity(intent);
         });
+        ImageButton back = findViewById(R.id.back);
+        back.setOnClickListener(v ->{
+            Intent intent = new Intent(ObjectActivity.this, ChooseActivity.class);
+            startActivity(intent);
+        });
+        radar = findViewById(R.id.radar);
+        radar.setOnClickListener(v ->{
+            Intent intent = new Intent(ObjectActivity.this, SurfaceActivity.class);
+            startActivity(intent);
+        });
+        ImageButton pos =findViewById(R.id.position);
+        Joystick joy = findViewById(R.id.joy);
+        SeekBar seekbar = findViewById(R.id.zoomSeekBar);
+        LinearLayout info_practice = findViewById(R.id.info_practice);
+        pos.setOnClickListener( v-> {
+                    ispos = !ispos; // Toggle the state
+                    if (ispos) {
+                        pos.setBackground(ContextCompat.getDrawable(ObjectActivity.this, R.drawable.selected_round_button));
+                        pos.setImageResource(R.drawable.selected_position);
+                        joy.setVisibility(View.VISIBLE);
+                        seekbar.setVisibility(View.VISIBLE);
+                        info_practice.setVisibility(View.GONE);
+                        hideHorizontalScrollView();
+                    } else {
+                        pos.setBackground(ContextCompat.getDrawable(ObjectActivity.this, R.drawable.round_button));
+                        pos.setImageResource(R.drawable.position);
+                        joy.setVisibility(View.GONE);
+                        seekbar.setVisibility(View.GONE);
+                        info_practice.setVisibility(View.VISIBLE);
+                        if(btnMore.isChecked()) {
+                            showHorizontalScrollView();
+                        }
+                        else{
+                            hideHorizontalScrollView();
+                        }
+                    }
+                }
+        );
+        wheelRecyclerView = findViewById(R.id.wheelRecyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        wheelRecyclerView.setLayoutManager(layoutManager);
+        List<String> items = new ArrayList<>();
+        for (int i = 1; i <= 20; i++) {
+            items.add("Item " + i);
+        }
+        WheelAdapter adapter = new WheelAdapter(this, items);
+        wheelRecyclerView.setAdapter(adapter);
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(wheelRecyclerView);
+        wheelRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                updateOpacity(recyclerView);
+            }
+        });
+        ImageButton settingButton = findViewById(R.id.setting);
+        settingButton.setOnClickListener(v -> {
+            isWheelVisible = !isWheelVisible;
+            if (isWheelVisible) {
+                wheelRecyclerView.setVisibility(View.GONE);
+            } else {
+                wheelRecyclerView.setVisibility(View.VISIBLE);
+                settingButton.setBackgroundResource(R.drawable.selected_round_button);
+                settingButton.setImageResource(R.drawable.selected_setting);
+            }
+        });
     }
-
+    private void updateOpacity(RecyclerView recyclerView) {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        if (layoutManager == null) return;
+        int firstVisible = layoutManager.findFirstVisibleItemPosition();
+        int lastVisible = layoutManager.findLastVisibleItemPosition();
+        int centerPosition = (firstVisible + lastVisible) / 2;
+        for (int i = firstVisible; i <= lastVisible; i++) {
+            View itemView = layoutManager.findViewByPosition(i);
+            if (itemView != null) {
+                float distance = Math.abs(i - centerPosition);
+                float alpha = 1.0f - (distance / (float)(lastVisible - firstVisible + 1));
+                itemView.setAlpha(Math.max(alpha, 0.5f)); // minimum opacity 50%
+            }
+        }
+    }
     private void createButtons() {
         for (String item : itemList) {
             final Button button = new Button(this);

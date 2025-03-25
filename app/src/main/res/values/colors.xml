@@ -7,4 +7,5 @@
     <color name="blue">#1F85DE</color>
     <color name="dark_blue">#0E0749</color>
     <color name="lighter_blue">#7FA1CAFF</color>
+    <color name="themeTrans">#B3B7E1FF</color>
 </resources>

@@ -2,17 +2,20 @@ package com.anhinla.mobileasm11;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.TextView;
-
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -20,75 +23,86 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
-import java.util.concurrent.ExecutionException;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class ScanActivity extends AppCompatActivity {
 
+    private static final int PERMISSION_CAMERA = 1;
+    private static final String TAG = "ScanActivity";
+
+    private PreviewView previewView;
+    private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
+    private ImageCapture imageCapture;
+    private ExecutorService cameraExecutor;
     private View movingBar;
     private TextView animatedText;
-    public static final int PERMISSION_CAMERA = 1;
-    private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
-    private PreviewView previewView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+
         setContentView(R.layout.activity_scan);
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
 
         checkPermissions();
         previewView = findViewById(R.id.previewView);
+        movingBar = findViewById(R.id.movingBar);
+        animatedText = findViewById(R.id.animatedText);
+
         cameraProviderFuture = ProcessCameraProvider.getInstance(this);
         cameraProviderFuture.addListener(() -> {
             try {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
                 bindPreview(cameraProvider);
-            } catch (ExecutionException | InterruptedException e) {
-                // No errors need to be handled for this Future.
-                // This should never be reached.
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to bind camera", e);
             }
         }, ContextCompat.getMainExecutor(this));
 
-        movingBar = findViewById(R.id.movingBar);
-        animatedText = findViewById(R.id.animatedText);
+        cameraExecutor = Executors.newSingleThreadExecutor();
 
+        // Start animations
         animateBar();
-
         animateText();
 
+        // Auto capture after 6 seconds
+        new Handler(Looper.getMainLooper()).postDelayed(this::captureImage, 6000);
+
+        // Back button functionality
         ImageButton backButton = findViewById(R.id.back);
         backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ScanActivity.this, MainActivity.class);
+            Intent intent = new Intent(ScanActivity.this, ObjectActivity.class);
             startActivity(intent);
             finish(); // Close the current activity
         });
     }
-    public void checkPermissions() {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
+
+    private void checkPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}
-                    , PERMISSION_CAMERA);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA);
         }
     }
 
-    void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
-        Preview preview = new Preview.Builder()
+    private void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
+        Preview preview = new Preview.Builder().build();
+
+        imageCapture = new ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
                 .build();
 
         CameraSelector cameraSelector = new CameraSelector.Builder()
@@ -97,23 +111,44 @@ public class ScanActivity extends AppCompatActivity {
 
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-        Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, preview);
+        Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, preview, imageCapture);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            switch (requestCode) {
-                case PERMISSION_CAMERA:
-                    Toast.makeText(this, "Camera access granted", Toast.LENGTH_SHORT)
-                            .show();
+    private void captureImage() {
+        if (imageCapture == null) return;
 
-                    break;
+        File photoFile = new File(getExternalFilesDir(null),
+                "IMG.jpg");
+
+        ImageCapture.OutputFileOptions outputOptions =
+                new ImageCapture.OutputFileOptions.Builder(photoFile).build();
+
+        imageCapture.takePicture(outputOptions, cameraExecutor, new ImageCapture.OnImageSavedCallback() {
+            @Override
+            public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                Uri savedUri = Uri.fromFile(photoFile);
+
+                // Pass the image URI to ObjectActivity
+                Intent intent = new Intent(ScanActivity.this, ObjectActivity.class);
+                intent.putExtra("captured_image_uri", savedUri.toString());
+                startActivity(intent);
+                finish();
             }
-        }
+
+            @Override
+            public void onError(@NonNull ImageCaptureException exception) {
+                Log.e("CameraX", "Image capture failed", exception);
+            }
+        });
     }
+
+    private void openObjectActivity(Uri imageUri) {
+        Intent intent = new Intent(ScanActivity.this, ObjectActivity.class);
+        intent.putExtra("captured_image_uri", imageUri.toString());
+        startActivity(intent);
+        finish();
+    }
+
     private void animateBar() {
         ObjectAnimator animator = ObjectAnimator.ofFloat(movingBar, "translationY", 0f, 1000f, 0f);
         animator.setDuration(6000);
@@ -121,7 +156,7 @@ public class ScanActivity extends AppCompatActivity {
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             movingBar.setVisibility(View.GONE); // Hide the bar
-        }, 6000); // Delay of 5 seconds
+        }, 6000); // Delay of 6 seconds
     }
 
     private void animateText() {
@@ -136,5 +171,22 @@ public class ScanActivity extends AppCompatActivity {
             Intent intent = new Intent(ScanActivity.this, ObjectActivity.class);
             startActivity(intent);
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cameraExecutor.shutdown();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_CAMERA && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Camera permission granted", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 }

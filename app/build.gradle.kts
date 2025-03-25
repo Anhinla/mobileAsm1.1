@@ -49,4 +49,5 @@ dependencies {
     implementation(libs.camera.camera2)
     implementation(libs.camera.lifecycle)
     implementation(libs.camera.video)
+    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.29")
 }
