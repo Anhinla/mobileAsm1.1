@@ -66,14 +66,64 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_margin="30dp"
         android:background="@drawable/round_button"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:focusable="true"
         android:src="@drawable/setting"
         android:scaleType="centerInside"
-        android:padding="18dp"
+        android:padding="10dp"
         android:layout_gravity="center"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/wheelRecyclerView"
+        android:layout_width="125dp"
+        android:layout_height="396dp"
+
+        android:layout_below="@+id/setting"
+        android:layout_alignEnd="@+id/setting"
+        android:layout_marginTop="2dp"
+
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:padding="2dp"
+        android:paddingTop="50dp"
+        android:paddingBottom="50dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/setting"
+        app:layout_constraintTop_toBottomOf="@+id/setting" />
+
+    <SeekBar
+        android:id="@+id/zoomSeekBar"
+        android:layout_width="200dp"
+        android:layout_height="68dp"
+        android:layout_above="@+id/navigation_bar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="center"
+
+        android:layout_marginBottom="144dp"
+        android:max="100"
+        android:progress="50"
+        android:progressDrawable="@drawable/slide_style"
+        android:rotation="-90"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:thumb="@drawable/slide_circ"
+        app:layout_constraintBottom_toTopOf="@+id/navigation_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.924"
+        app:layout_constraintStart_toEndOf="@+id/joy"
+        android:visibility="gone"/>
+
+    <com.anhinla.mobileasm11.Joystick
+        android:id="@+id/joy"
+        android:layout_width="205dp"
+        android:layout_height="333dp"
+        android:layout_above="@+id/navigation_bar"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/navigation_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"/>
     <!-- Top Buttons -->
     <!-- Horizontal Scroll View (Initially Hidden) -->
 
@@ -170,10 +220,12 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:fontFamily="@font/quicksand_bold"
-            android:text="@string/home"
+            android:text="Search Surface"
             android:textColor="@color/dark_blue"
             android:textSize="20sp"
             android:textStyle="bold" />
+
+
 
     </RelativeLayout>
 

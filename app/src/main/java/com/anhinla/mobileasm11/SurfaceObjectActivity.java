@@ -46,7 +46,7 @@ public class SurfaceObjectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_object);
+        setContentView(R.layout.activity_surface_object);
         ConstraintLayout mainLayout = findViewById(R.id.main); // Ensure this ID matches your XML layout
         // Receive captured image URI from ScanActivity
         String imageUriString = getIntent().getStringExtra("captured_image_uri");

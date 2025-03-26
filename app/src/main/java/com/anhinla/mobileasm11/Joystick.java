@@ -12,6 +12,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import android.content.Context;
 
@@ -103,20 +105,16 @@ public class Joystick extends SurfaceView implements SurfaceHolder.Callback, Vie
         }
     }
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
+    public void surfaceCreated(@NonNull SurfaceHolder holder) {
         setupDimensions();
         drawJoystick(centerX, centerY);
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-
-    }
+    public void surfaceDestroyed(SurfaceHolder holder) {}
 
 
     public float getHatRadius() {

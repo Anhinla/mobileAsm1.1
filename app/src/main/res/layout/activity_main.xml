@@ -45,6 +45,8 @@
                 android:src="@drawable/left" />
 
             <!-- Waving Logo -->
+
+            <!-- Right Image -->
             <pl.droidsonroids.gif.GifImageView
                 android:id="@+id/imageView4"
                 android:layout_width="wrap_content"
@@ -54,7 +56,6 @@
                 android:layout_marginRight="16dp"
                 android:src="@drawable/waving_robot" />
 
-            <!-- Right Image -->
             <ImageView
                 android:id="@+id/imageView6"
                 android:layout_width="wrap_content"
@@ -105,7 +106,7 @@
                     android:layout_height="wrap_content"
 
                     android:background="@drawable/white_shadow_bg"
-
+                    android:textColor="@color/black"
                     android:inputType="text"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -129,6 +130,7 @@
 
                 android:layout_marginEnd="64dp"
                 app:passwordToggleEnabled="true"
+                app:passwordToggleTint="#B3000000"
                 app:boxStrokeColor="@color/black"
                 android:elevation="8dp"
 
@@ -139,7 +141,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
-
+                    android:textColor="@color/black"
                     android:background="@drawable/white_shadow_bg"
                     android:inputType="textPassword"/>
             </com.google.android.material.textfield.TextInputLayout>
