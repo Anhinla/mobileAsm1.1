@@ -24,8 +24,6 @@ This is a mobile application developed using **Android Studio**. The app demonst
 
 ---
 
----
-
 ## Getting Started
 
 ### Prerequisites
