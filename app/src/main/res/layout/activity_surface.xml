@@ -5,45 +5,180 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/sample_img">
+    tools:context=".SurfaceActivity">
 
     <FrameLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:id="@+id/container">
-        <androidx.camera.view.PreviewView
-            android:layout_height="match_parent"
+<!--        <androidx.camera.view.PreviewView-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:id="@+id/previewView" />-->
+
+        <io.github.sceneview.ar.ArSceneView
             android:layout_width="match_parent"
-            android:id="@+id/previewView" />
+            android:layout_height="match_parent"
+            android:id="@+id/sceneView"
+            />
 
         <!-- Add the GridView here -->
-        <com.anhinla.mobileasm11.GridViewB
-            android:id="@+id/gridView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#40000000" /> <!-- semi-transparent black -->
+<!--        <com.anhinla.mobileasm11.GridViewB-->
+<!--            android:id="@+id/gridView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="#40000000" />-->
     </FrameLayout>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/quicksand_bold"
+        android:text="Place"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/navigation_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/placeButton"/>
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/topButtonRow"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        android:layout_margin="30dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        >-->
+
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/radar"-->
+<!--            android:layout_width="70dp"-->
+<!--            android:layout_height="70dp"-->
+<!--            android:focusable="true"-->
+<!--            android:src="@drawable/ic_radar_white"-->
+<!--            android:background="@drawable/selected_round_button"-->
+<!--            android:scaleType="centerInside"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:clickable="true"-->
+<!--            android:layout_marginBottom="10dp"/>-->
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/qr"-->
+<!--            android:layout_width="70dp"-->
+<!--            android:layout_height="70dp"-->
+<!--            android:focusable="true"-->
+<!--            android:src="@drawable/qr"-->
+<!--            android:background="@drawable/round_button"-->
+<!--            android:scaleType="centerInside"-->
+<!--            android:padding="18dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:clickable="true"-->
+<!--            android:layout_marginBottom="10dp"/>-->
+
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/position"-->
+<!--            android:layout_width="70dp"-->
+<!--            android:layout_height="70dp"-->
+<!--            android:focusable="true"-->
+<!--            android:src="@drawable/position"-->
+<!--            android:background="@drawable/round_button"-->
+<!--            android:scaleType="centerInside"-->
+<!--            android:padding="14dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:clickable="true"/>-->
+
+<!--    </LinearLayout>-->
+
+    <com.anhinla.mobileasm11.Joystick
+        android:id="@+id/joy"
+        android:layout_width="206dp"
+        android:layout_height="256dp"
+        android:layout_above="@+id/navigation_bar"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="30dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
     <!-- Remove the movingBar ImageView -->
 
-    <TextView
-        android:id="@+id/animatedText"
-        android:layout_width="250dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="56dp"
-        android:background="@drawable/practice_end_gradient"
-        android:elevation="10dp"
-        android:fontFamily="@font/quicksand_bold"
-        android:gravity="center"
-        android:text="END"
-        android:textColor="@color/white"
-        android:textSize="25sp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <TextView-->
+<!--        android:id="@+id/animatedText"-->
+<!--        android:layout_width="250dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginTop="56dp"-->
+<!--        android:background="@drawable/practice_end_gradient"-->
+<!--        android:elevation="10dp"-->
+<!--        android:fontFamily="@font/quicksand_bold"-->
+<!--        android:gravity="center"-->
+<!--        android:text="END"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="25sp"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.496"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/info_practice"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="50dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        android:layout_marginBottom="5dp">-->
+
+<!--        <ToggleButton-->
+<!--            android:id="@+id/placeButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="10dp"-->
+<!--            android:background="@drawable/corner_radius_button"-->
+<!--            android:fontFamily="@font/quicksand_bold"-->
+<!--            android:textOn="Place"-->
+<!--            android:textOff="Place"-->
+<!--            android:textColor="@color/black"-->
+<!--            app:backgroundTint="@null" />-->
+
+<!--        <ToggleButton-->
+<!--            android:id="@+id/btnMore"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="10dp"-->
+<!--            android:background="@drawable/corner_radius_button"-->
+<!--            android:fontFamily="@font/quicksand_bold"-->
+<!--            android:textOn="..."-->
+<!--            android:textOff="..."-->
+<!--            android:textColor="@color/black"-->
+<!--            app:backgroundTint="@null" />-->
+
+<!--    </LinearLayout>-->
+
+<!--    <HorizontalScrollView-->
+<!--        android:id="@+id/horizontalScrollView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="70dp"-->
+<!--        android:background="@drawable/activity_background"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/navigation_bar"-->
+<!--        android:scrollbars="none"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent">-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/linearContainer"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:padding="10dp">-->
+<!--        </LinearLayout>-->
+<!--    </HorizontalScrollView>-->
 
     <RelativeLayout
         android:id="@+id/navigation_bar"

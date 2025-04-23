@@ -50,4 +50,5 @@ dependencies {
     implementation(libs.camera.lifecycle)
     implementation(libs.camera.video)
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.29")
+    implementation("io.github.sceneview:arsceneview:0.9.8")
 }
